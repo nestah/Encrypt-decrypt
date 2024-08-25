@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeTel Telecom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
+</head>
+<body class="has-background-light">
+    <div class="container mt-5">
+        <h1 class="title has-text-centered">LifeTel Telecom</h1>
+        <div class="box mb-5">
+            <h2 class="title is-4">Encrypt Reference ID</h2>
+            <form id="encrypt-form">
+                <div class="field">
+                    <label for="referenceId" class="label">Reference ID</label>
+                    <div class="control">
+                        <input type="text" id="referenceId" class="input" placeholder="Enter Reference ID (12 alphanumeric characters)" required>
+                    </div>
+                </div>
+                <button type="submit" class="button is-primary">Encrypt</button>
+            </form>
+            <div id="encrypt-result" class="mt-3"></div>
+        </div>
+        <div class="box">
+            <h2 class="title is-4">Decrypt Reference ID</h2>
+            <form id="decrypt-form">
+                <div class="field">
+                    <label for="encryptedReferenceId" class="label">Encrypted Reference ID</label>
+                    <div class="control">
+                        <input type="text" id="encryptedReferenceId" class="input" placeholder="Enter Encrypted Reference ID" required>
+                    </div>
+                </div>
+                <button type="submit" class="button is-success">Decrypt</button>
+            </form>
+            <div id="decrypt-result" class="mt-3"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('encrypt-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const referenceId = document.getElementById('referenceId').value;
+            const response = await fetch('/encrypt', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ referenceId })
+            });
+            const result = await response.json();
+            document.getElementById('encrypt-result').innerText = result.encryptedReferenceId || result.error;
+        });
+
+        document.getElementById('decrypt-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const encryptedReferenceId = document.getElementById('encryptedReferenceId').value;
+            const response = await fetch('/decrypt', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ encryptedReferenceId })
+            });
+            const result = await response.json();
+            document.getElementById('decrypt-result').innerText = result.decryptedReferenceId || result.error;
+        });
+    </script>
+</body>
+</html>
